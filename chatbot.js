@@ -8,11 +8,17 @@ const client = new Client({
     }
 })
 
-let deck = [];
 
 //-------------GAME VARIABLES------------\\
+let deck = [];
 let players = 2;
-
+let hand1 = [];
+let hand2 = [];
+let spaces = " ";
+for(let i = 0; i <= "4000";){
+  spaces = spaces + " "
+  i++
+}
 
 //-------------Whatsapp Variables---------\\
 client.on('qr', qr => {
@@ -24,15 +30,18 @@ client.on('ready', () => {
 });
 
 client.on('message_create', message => {
-	if(message.body === '!Heyyy') {
-		message.reply('Halöle du Menschi');
+	if(message.body === '!START') {
 		start();
+    message.reply("[Spieler 1]" + spaces + hand1.toString())
+    message.reply("[Spieler 2]" + spaces + hand2.toString())
 	}
 });
 
 client.on('message', message => {
-	if(message.body === '!Heyy') {
-		message.reply('Halöle du Menschi!');
+	if(message.body === '!START') {
+		start();
+    message.reply("[Spieler 1]" + spaces + hand1.toString())
+    message.reply("[Spieler 2]" + spaces + hand2.toString())
 	}
 });
 
@@ -43,6 +52,8 @@ function start() {
     const ranks = ["7", "8", "9", "10", "Bube", "Dame", "König", "Ass"];
     let id = 1;
 
+    hand1 = []
+    hand2 = []
 
     // Populate the deck with cards
     for (const suit of suits) {
@@ -61,17 +72,19 @@ function start() {
 
     console.log(deck)
 
-    for (let i = 0; i <= players;)
-    {
-            for (let ii = 1; i <= 7;)
-            {
-                    let rand = Math.floor(Math.random() * 32)
-                    translate(rand)
-		    i++
-            }
+    for (let i = 1; i <= 2; i++) {
+      for (let ii = 1; ii <= 7; ii++) {
+        let rand = Math.floor(Math.random() * 32)
+        if (i == 1) {
+          hand1.push(translate(rand))
+        }
+        if (i == 2) {
+          hand2.push(translate(rand))
+        }
+      }
     }
-
-
+    return hand1, hand2
+    
 }
 
 //----------Translate ID to card ---------\\
@@ -79,12 +92,11 @@ function translate(target) {
 	let returncard;
 	for (const card of deck) {
 	  if (card.id === target) {
-		returncard = card.suit + " " + card.rank;	  
-		console.log(returncard)
-		break; // Exit the loop once the card is found
+		  returncard = card.suit + " " + card.rank;	  
+		  break; // Exit the loop once the card is found
 	  }
 	}
-
+  return returncard;
 }
  
 
