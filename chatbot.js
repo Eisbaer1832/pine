@@ -3,18 +3,21 @@ const { Client, LocalAuth} = require('whatsapp-web.js');
 
 const client = new Client({
     authStrategy: new LocalAuth(),
+    webVersion: "2.2341.18",
+    webVersionCache: { type: 'remote', remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2341.18.html', },
     puppeteer: {
-	args: ['--no-sandbox'],
-    }
+	    args: ['--no-sandbox'],
+    },
 })
 
 
 //-------------GAME VARIABLES------------\\
 let deck = [];
-let players = 2;
 let hand1 = [];
 let hand2 = [];
 let spaces = " ";
+
+// spaces, so whatsapp hides the cards
 for(let i = 0; i <= "4000";){
   spaces = spaces + " "
   i++
@@ -31,9 +34,11 @@ client.on('ready', () => {
 
 client.on('message_create', message => {
 	if(message.body === '!START') {
-		start();
+    start();
+    message.edit('started')
     message.reply("[Spieler 1]" + spaces + hand1.toString())
     message.reply("[Spieler 2]" + spaces + hand2.toString())
+    message.react('✏️')
 	}
 });
 
@@ -60,6 +65,7 @@ function start() {
       for (const rank of ranks) {
         // Create a card object with a rank, suit, and value (in this case, 4)
         const card = {
+          name: suit + " " + rank,
           rank: rank,
           suit: suit,
           value: 4,
@@ -84,7 +90,6 @@ function start() {
       }
     }
     return hand1, hand2
-    
 }
 
 //----------Translate ID to card ---------\\
